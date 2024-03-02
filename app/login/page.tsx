@@ -22,15 +22,28 @@ export default function login() {
     }));
   }
   
-  async function onSubmit(event: FormEvent<HTMLFormElement>) {
+  async function onSubmit(event: FormEvent<HTMLFormElement>){
     event.preventDefault();
-
+      console.log(formData);
+      
     const { email, password } = formData;
     if (!email || !password) {
       return toast.warning("Please fill in all required fields.");
     }
 
-    console.log("Form Data:", formData);
+    const response = await fetch('/api/login',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({...formData})
+    });
+    if (response.status == 200){
+      return toast.success("Log in success!");
+      
+    } else if (response.status == 401 || response.status == 404){
+      return toast.error("Invalid user or password");
+    }else{
+      return toast.error("An unknown error occurred.");
+    }
   }
 
   return (

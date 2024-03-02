@@ -41,7 +41,22 @@ export default function Register() {
       
     }
 
-    console.log('Form Data:', formData);
+    const response = await fetch('/api/register',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({...formData})
+    });
+    
+    if (response.status == 201 ){
+      return toast.success(`Account created successfully!`);
+      
+    } else if (response.status == 403){
+      return toast.warning(`Account already exists.`);
+    }
+    else{
+      return toast.error(`An unknown error occurred.`);
+    }
+
   }
 
   return (
