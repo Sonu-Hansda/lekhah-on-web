@@ -5,9 +5,11 @@ import logo from "@/app/logo.png";
 import Link from "next/link";
 import {FiMenu} from "react-icons/fi";
 import { useState,useEffect } from "react";
+import { useSession,signOut } from "next-auth/react";
 
 export default function Navbar(){
-      const [showMenu,setShowMenu] = useState(false);
+  const session = useSession();
+  const [showMenu,setShowMenu] = useState(false);
       
       useEffect(() => {
        
@@ -21,22 +23,33 @@ export default function Navbar(){
           <div className="flex space-x-1 items-center align-middle">
           <Image src={logo} alt="Site logo" height={32} width={32} />
           <Link href={"/"}>
-          <h1 className="text-2xl font-bold">लेखक<span className={`${showMenu? `text-blue-500` : `text-red-500`}`}>on</span>web</h1>
+          <h1 className="text-2xl font-bold">लेखक<span className="text-blue-500">on</span>web</h1>
           </Link>
           </div>
           <ul className="hidden md:flex space-x-4 text-sm items-baseline ">
             <Link href={"/"}>
             <li className="hover:underline underline-offset-4 cursor-pointer">Home</li>
             </Link>
-            <Link href={"/create"}>
+            <Link href={"/write"}>
             <li className="hover:underline underline-offset-4 cursor-pointer">Write</li>
             </Link>
-            <Link href={"/login"}>
-            <li className="hover:underline underline-offset-4 cursor-pointer">Sign In</li>
-            </Link>
-            <Link href={"/register"}>
-            <li className="hover:bg-blue-800 cursor-pointer bg-blue-500 p-2 text-white  transition-all duration-300">Create Account</li>
-            </Link>
+            {
+               session.data?
+              (
+                <Link href={"/api/auth/signout"}>
+                  <li>Logout</li>
+                </Link>
+              ):(
+                <>
+
+                <Link href={"/login"}>
+                <li className="hover:underline underline-offset-4 cursor-pointer">Sign In</li>
+                </Link>
+                <Link href={"/register"}>
+                <li className="hover:bg-blue-800 cursor-pointer bg-blue-500 p-2 text-white  transition-all duration-300">Create Account</li>
+                </Link>
+                </>)
+                }
           </ul>
         </nav>
     );

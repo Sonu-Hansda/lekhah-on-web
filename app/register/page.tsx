@@ -1,5 +1,6 @@
 "use client"
 import React, { ChangeEvent, FormEvent, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 export interface RegistrationFormData {
     firstname: string;
@@ -11,6 +12,7 @@ export interface RegistrationFormData {
   }
 
 export default function Register() {
+  const router = useRouter();
     const [formData, setFormData] = useState<RegistrationFormData>({
         firstname: '',
         lastname: '',
@@ -48,6 +50,7 @@ export default function Register() {
     });
     
     if (response.status == 201 ){
+      router.push("/login");
       return toast.success(`Account created successfully!`);
       
     } else if (response.status == 403){
