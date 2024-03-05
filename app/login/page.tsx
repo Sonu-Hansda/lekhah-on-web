@@ -32,17 +32,21 @@ export default function login() {
     if (!email || !password) {
       return toast.warning("Please fill in all required fields.");
     }
-      const response:SignInResponse|undefined = await signIn("credentials",{
+    try {
+      const res = await signIn("credentials", {
         email,
         password,
-        redirect:false,
+        redirect: false,
       });
-      if (response?.ok){
-        router.push("/");
-        return toast.success("Log in success");
-      }else{
-        return toast.error("Invalid user or password.");
+
+      if (res?.error) {
+        return toast.error("Invalid Credentials");
       }
+
+      return toast.success("Login success");
+    } catch (error) {
+      return toast.error("An unknown error occurred.");
+    }
       
     // const response = await fetch('/api/login',{
     //   method:'POST',
