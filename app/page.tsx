@@ -23,13 +23,13 @@ export default function Home() {
 
       if (response.status === 200) {
         const data = await response.json();
-        setPosts(data.posts); // Update state with fetched posts
-        toast.success(`Posts fetched!`);
+        setPosts(data.posts); 
+       
       } else {
         toast.error(`An unknown error occurred.`);
       }
     } catch (error) {
-      console.error("Error fetching posts:", error);
+     
       toast.error(`An error occurred while fetching posts.`);
     }
   }

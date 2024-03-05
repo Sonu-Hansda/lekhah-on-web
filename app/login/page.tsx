@@ -1,9 +1,10 @@
 "use client";
 
-import { ChangeEvent, FormEvent, useState } from "react";
+import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { SignInResponse, signIn } from "next-auth/react";
+import {  signIn } from "next-auth/react";
+import { useSession } from "next-auth/react";
 
 interface LoginFormData {
   email: string;
@@ -12,6 +13,7 @@ interface LoginFormData {
 
 export default function login() {
   const router = useRouter();
+  const session = useSession();
   const [formData, setFormData] = useState<LoginFormData>({
     email: "",
     password: "",
@@ -24,7 +26,18 @@ export default function login() {
       [name]: value
     }));
   }
+
+  useEffect(() => {
+   ifUserLoggedIn();
+  },[]);
   
+  async function ifUserLoggedIn(){
+    if ( session.data?.user?.email ){
+      router.replace("/");
+      return toast.info("already logged in");
+    }
+  }
+
   async function onSubmit(event: FormEvent<HTMLFormElement>){
     event.preventDefault();
     
@@ -48,20 +61,6 @@ export default function login() {
       return toast.error("An unknown error occurred.");
     }
       
-    // const response = await fetch('/api/login',{
-    //   method:'POST',
-    //   headers:{'Content-Type':'application/json'},
-    //   body:JSON.stringify({...formData})
-    // });
-    // if (response.status == 200){
-    //   router.push("/")
-    //   return toast.success("Log in success!");
-      
-    // } else if (response.status == 401 || response.status == 404){
-    //   return toast.error("Invalid user or password");
-    // }else{
-    //   return toast.error("An unknown error occurred.");
-    // }
     
   }
 
