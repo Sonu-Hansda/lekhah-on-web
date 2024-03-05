@@ -1,6 +1,15 @@
 "use client"
 
-import { ChangeEvent, ChangeEventHandler, FormEvent, useState } from "react";
+import { 
+    BtnBold, 
+    BtnItalic, 
+    BtnUnderline,
+    BtnBulletList,
+    Editor, 
+    EditorProvider, 
+    Toolbar
+  } from 'react-simple-wysiwyg';
+import { ChangeEvent, FormEvent, useState } from "react";
 import placeholder from "../placeholder.jpg";
 import Image, { StaticImageData } from "next/image";
 import { useSession } from "next-auth/react";
@@ -32,12 +41,6 @@ export default function create(){
             }));
           }
           
-          function handleTextAreaChange(event:ChangeEvent<HTMLTextAreaElement>){
-           setPost(prevState =>({
-            ...prevState,
-            description:event.target.value
-           }));
-          }
      async function handlesubmit(event:FormEvent<HTMLFormElement>){
         event.preventDefault();
         const {title,description,coverImage,email} = post;
@@ -46,8 +49,9 @@ export default function create(){
         }else if (!description || description.trim.length !> 0 ){
             return toast.warning("Description should not be empty");
         }else {
+            
           
-    const response = await fetch('/api/write',{
+    const response = await fetch('/api/post',{
         method:'POST',
         headers:{'Content-Type':'application/json'},
         body:JSON.stringify({
@@ -83,7 +87,18 @@ export default function create(){
             <input className="w-full text-xl font-semibold p-4 outline-none border-2 focus:border-slate-600 " onChange={handleInputChange} placeholder="Post title" type="text" name="title" id="title" />
            </div>
            <div className="w-full mb-4">
-            <textarea onChange={handleTextAreaChange} className="w-full p-4 outline-none border-2 focus:border-slate-600" name="desc" id="desc" placeholder="Write something .." cols={30} rows={10}></textarea>
+           
+            <EditorProvider>
+                <Editor  style={{"backgroundColor":"white","minHeight":"14rem","padding":"1.2rem"}} value={post.description} onChange={(e)=>{setPost({...post,description:e.target.value})}} >
+                    <Toolbar>
+                        <BtnBold/>
+                        <BtnUnderline/>
+                        <BtnItalic/>
+                        <BtnBulletList/>
+                    </Toolbar>
+                </Editor>
+            </EditorProvider>
+          
             </div>
            <div className="w-full">
             <button type="submit" className="w-full p-2 bg-blue-400 hover:bg-blue-600 font-semibold">Submit</button>

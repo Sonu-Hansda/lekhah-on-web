@@ -34,9 +34,9 @@ export async function POST(req:NextRequest,res:NextResponse){
 
 export async function GET(req: NextRequest, res: NextResponse) {
     try {
-      const posts = await prisma.post.findMany();
+      const posts = (await prisma.post.findMany());
       
-      return  NextResponse.json({"posts":posts});
+      return  NextResponse.json({"posts":posts.reverse()});
     } catch (err) {
       return new NextResponse("Unknown error occurred.", { status: 400 });
     }
