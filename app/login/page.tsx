@@ -55,7 +55,7 @@ export default function login() {
       if (res?.error) {
         return toast.error("Invalid Credentials");
       }
-
+      router.replace("/")
       return toast.success("Login success");
     } catch (error) {
       return toast.error("An unknown error occurred.");
